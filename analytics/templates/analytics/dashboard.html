@@ -1,0 +1,365 @@
+
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Reading Lab · Your Reading Insights</title>
+  <link rel="stylesheet" href="{% static 'analytics/style.css' %}">
+</head>
+
+<body>
+<div class="shell">
+
+  {% include 'analytics/sidebar.html' %}
+
+  <!-- MAIN CONTENT -->
+  <main class="main">
+
+    <!-- TOP BAR -->
+    <header class="topbar">
+      <span>
+        Reading Lab <b>/</b> Insights
+      </span>
+
+      <span class="file-pill">
+        ● Library imported
+      </span>
+    </header>
+
+    <div class="content">
+
+      <!-- INTRODUCTION -->
+      <div class="eyebrow">YOUR READING LAB</div>
+
+      <h1>
+        The stories behind<br>
+        your <em>reading habits.</em>
+      </h1>
+
+      <p class="intro">
+        Go beyond the number of books you read.
+        Discover what sets apart the books you choose,
+        love, and leave on your to-read list.
+      </p>
+
+      {% if not has_data %}
+        <div class="notice">
+          No books are available yet.
+          <a href="{% url 'upload' %}">
+            Upload a Goodreads CSV
+          </a>
+          to see your insights.
+        </div>
+      {% endif %}
+
+      <!-- LIBRARY SUMMARY -->
+      <section class="metric-grid" aria-label="Library summary">
+
+        <article class="metric">
+          <span>IN YOUR LIBRARY</span>
+          <strong>{{ book_count }}</strong>
+          <small>books in total</small>
+        </article>
+
+        <article class="metric">
+          <span>FINISHED BOOKS</span>
+          <strong>{{ read_count }}</strong>
+          <small>books read</small>
+        </article>
+
+        <article class="metric">
+          <span>TO-READ LIST</span>
+          <strong>{{ pending_count }}</strong>
+          <small>books waiting to be read</small>
+        </article>
+
+        <article class="metric">
+          <span>YOUR RATINGS</span>
+          <strong>{{ rated_count }}</strong>
+          <small>rated books</small>
+        </article>
+
+      </section>
+
+      <!-- SECTION 1: YOUR CHOICES -->
+      <div class="section-label">
+        <span>01 / YOUR CHOICES</span>
+        <span>
+          What do you save, and what do you actually read?
+        </span>
+      </div>
+
+      <section class="two-cols">
+
+        <!-- PAGE COUNT COMPARISON -->
+        <article class="panel">
+
+          <div class="panel-top">
+            <div>
+              <span class="kicker">READING TRENDS</span>
+              <h2>The length of your stories</h2>
+            </div>
+
+            <span class="panel-icon">↗</span>
+          </div>
+
+          <p class="panel-sub">
+            Median page count by reading status
+          </p>
+
+          <div class="comparison">
+
+            <div class="compare-row">
+              <span>Read</span>
+              <b>
+                {{ median_read_pages|floatformat:0|default:'—' }}
+                pages
+              </b>
+            </div>
+
+            <div class="track">
+              <div
+                class="fill a"
+                style="width:{% widthratio median_read_pages|default:0 600 100 %}%"
+              ></div>
+            </div>
+
+            <div class="compare-row">
+              <span>To read</span>
+              <b>
+                {{ median_pending_pages|floatformat:0|default:'—' }}
+                pages
+              </b>
+            </div>
+
+            <div class="track">
+              <div
+                class="fill b"
+                style="width:{% widthratio median_pending_pages|default:0 600 100 %}%"
+              ></div>
+            </div>
+
+          </div>
+
+          <p class="insight">
+            Are the books on your to-read list longer
+            than those you have finished?
+            Compare the two to find out.
+          </p>
+
+        </article>
+
+        <!-- PUBLICATION YEAR COMPARISON -->
+        <article class="panel">
+
+          <div class="panel-top">
+            <div>
+              <span class="kicker">THE TIME FACTOR</span>
+              <h2>Old vs. New releases</h2>
+            </div>
+
+            <span class="panel-icon">⌛</span>
+          </div>
+
+          <p class="panel-sub">
+            Median original publication year
+          </p>
+
+          <div class="year-pair">
+
+            <div>
+              <small>READ</small>
+              <strong>
+                {{ median_read_year|floatformat:0|default:'—' }}
+              </strong>
+            </div>
+
+            <div class="vs">vs.</div>
+
+            <div>
+              <small>TO READ</small>
+              <strong>
+                {{ median_pending_year|floatformat:0|default:'—' }}
+              </strong>
+            </div>
+
+          </div>
+
+          <p class="insight">
+            Do you save newer releases but end up
+            reading older books?
+            See whether the data supports that pattern.
+          </p>
+
+        </article>
+
+      </section>
+
+      <!-- SECTION 2: YOUR TASTE -->
+      <div class="section-label">
+        <span>02 / YOUR TASTE</span>
+        <span>
+          How do you rate the books you read?
+        </span>
+      </div>
+
+      <section class="two-cols ratings-row">
+
+        <!-- RATINGS CHART -->
+        <article class="panel">
+
+          <div class="panel-top">
+            <div>
+              <span class="kicker">YOUR RATINGS</span>
+              <h2>Your star-rating pattern</h2>
+            </div>
+
+            <span class="panel-icon">✳</span>
+          </div>
+
+          <div class="rating-chart">
+
+            {% for bar in rating_bars %}
+
+              <div class="rating-line">
+
+                <span>{{ bar.stars }} ★</span>
+
+                <div class="track">
+                  <div
+                    class="fill c"
+                    style="width:{{ bar.width }}%"
+                  ></div>
+                </div>
+
+                <b>{{ bar.count }}</b>
+
+              </div>
+
+            {% endfor %}
+
+          </div>
+
+          <p class="footnote">
+            Books with a rating of 0 (not rated)
+            are excluded.
+          </p>
+
+        </article>
+
+        <!-- EXPLANATION OF RECOMMENDATIONS -->
+        <article class="panel feature-panel">
+
+          <span class="kicker">EXPERIMENT #1</span>
+
+          <h2>Your next read, explained.</h2>
+
+          <p>
+            We look for books on your to-read list
+            that resemble your highest-rated books
+            in <b>page count</b> and
+            <b>publication year</b>.
+          </p>
+
+          <span class="feature-accent">
+            This is not AI or a prediction of your enjoyment.
+            It is a simple, transparent similarity measure.
+          </span>
+
+        </article>
+
+      </section>
+
+      <!-- SECTION 3: RECOMMENDATIONS -->
+      <div class="section-label">
+        <span>03 / WHAT TO READ NEXT</span>
+        <span>
+          A ranking based on your own library
+        </span>
+      </div>
+
+      <section class="panel recommendation-panel">
+
+        <div class="panel-top">
+          <div>
+            <span class="kicker">
+              EXPLAINABLE RANKING
+            </span>
+
+            <h2>What should you read next?</h2>
+          </div>
+
+          <span class="panel-icon">✦</span>
+        </div>
+
+        <p class="panel-sub">
+          Similarity to your 4–5-star books ·
+          Reference:
+          {{ reference_pages|floatformat:0|default:'—' }}
+          pages and year
+          {{ reference_year|floatformat:0|default:'—' }}
+        </p>
+
+        <div class="recommendations">
+
+          {% for book in recommendations %}
+
+            <div class="book-row">
+
+              <span class="rank">
+                {{ forloop.counter|stringformat:'02d' }}
+              </span>
+
+              <div class="book-info">
+
+                <strong>{{ book.title }}</strong>
+
+                <small>
+                  {{ book.author }} ·
+                  {{ book.pages|floatformat:0 }} pages ·
+                  {{ book.year|floatformat:0 }}
+                </small>
+
+              </div>
+
+              <span class="score">
+                {{ book.score }}
+                <small>/100</small>
+              </span>
+
+            </div>
+
+          {% empty %}
+
+            <p>
+              Not enough data to calculate recommendations.
+            </p>
+
+          {% endfor %}
+
+        </div>
+
+        <p class="footnote">
+          Heuristic similarity score
+          (55% page count, 45% publication year),
+          not the probability that you will like the book.
+          Books missing these values are not scored.
+        </p>
+
+      </section>
+
+      <!-- FOOTER -->
+      <footer>
+        READING LAB · Django course project ·
+        Insights from your Goodreads library
+      </footer>
+
+    </div>
+
+  </main>
+
+</div>
+</body>
+</html>

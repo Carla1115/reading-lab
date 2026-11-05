@@ -1,0 +1,74 @@
+
+/* User information and logout button */
+
+.sidebar-logout {
+    margin-top: 18px;
+}
+
+.logout-btn {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 8px;
+    background: transparent;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 500;
+    text-align: left;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.logout-btn:hover {
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.sidebar-bottom strong {
+    display: block;
+    color: #ffffff;
+    font-size: 14px;
+    margin-top: 4px;
+}
+
+
+
+/* Shared layout */
+
+.sidebar-logout {
+    margin-top: 18px;
+}
+
+.logout-btn {
+    width: 100%;
+    padding: 12px;
+    background: transparent;
+    color: white;
+    border: 1px solid rgba(255,255,255,0.35);
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.logout-btn:hover {
+    background: rgba(255,255,255,0.12);
+}
+
+.sidebar-bottom strong {
+    display: block;
+    color: white;
+    margin-top: 5px;
+}
+
+/* Library layout */
+
+.main .container {
+    max-width: 1100px;
+    margin: 35px auto;
+    padding: 0 32px;
+}
+
+/* Upload layout */
+
+.main .upload-page {
+    min-height: calc(100vh - 90px);
+    padding: 30px;
+}

@@ -1,0 +1,114 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Register | Reading Lab</title>
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            background: #f7f5ef;
+            font-family: Arial, sans-serif;
+            color: #173e2b;
+        }
+
+        .auth-card {
+            width: min(420px, 92%);
+            padding: 36px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px #173e2b12;
+        }
+
+        h1 { text-align: center; margin-bottom: 8px; }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        label { display: block; margin: 14px 0 6px; }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 24px;
+            padding: 14px;
+            background: #173e2b;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        button:hover { background: #285b41; }
+
+        .errors, .errorlist {
+            color: #a52a2a;
+            font-size: 13px;
+        }
+
+        .helptext {
+            display: block;
+            margin-top: 6px;
+            color: #666;
+            font-size: 12px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 22px;
+        }
+
+        a { color: #285b41; }
+    </style>
+</head>
+<body>
+    <main class="auth-card">
+        <h1>Reading Lab</h1>
+        <p class="subtitle">Create your account</p>
+
+        <form method="post">
+            {% csrf_token %}
+
+            {% for field in form %}
+                <label for="{{ field.id_for_label }}">
+                    {{ field.label }}
+                </label>
+
+                {{ field }}
+
+                {% if field.help_text %}
+                    <div class="helptext">
+                        {{ field.help_text }}
+                    </div>
+                {% endif %}
+
+                {% for error in field.errors %}
+                    <p class="errors">{{ error }}</p>
+                {% endfor %}
+            {% endfor %}
+
+            <button type="submit">Create account</button>
+        </form>
+
+        <p class="footer">
+            Already have an account?
+            <a href="{% url 'login' %}">Log in</a>
+        </p>
+    </main>
+</body>
+</html>

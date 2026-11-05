@@ -1,0 +1,37 @@
+
+<aside class="sidebar">
+
+  <div class="brand">
+    <span class="brand-icon">◧</span>
+    <span>reading<span class="brand-accent">lab</span></span>
+  </div>
+
+  <p class="sidebar-caption">YOUR SPACE</p>
+
+  <a class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}"
+     href="{% url 'dashboard' %}">
+    ◫ <span>Insights</span>
+  </a>
+
+  <a class="nav-link {% if request.resolver_match.url_name == 'library' %}active{% endif %}"
+     href="{% url 'library' %}">
+    ▤ <span>My Library</span>
+  </a>
+
+  <a class="nav-link {% if request.resolver_match.url_name == 'upload' %}active{% endif %}"
+     href="{% url 'upload' %}">
+    ⤒ <span>Import Books</span>
+  </a>
+
+  <div class="sidebar-bottom">
+    <p>Signed in as</p>
+    <strong>{{ request.user.username }}</strong>
+
+    <form method="post" action="{% url 'logout' %}" class="sidebar-logout">
+      {% csrf_token %}
+      <button type="submit" class="logout-btn">Log out</button>
+    </form>
+  </div>
+
+</aside>
+

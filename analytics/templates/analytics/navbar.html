@@ -1,0 +1,102 @@
+
+<style>
+    .reading-navbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 20px;
+        padding: 16px 32px;
+        background: #173e2b;
+        color: white;
+        font-family: Arial, sans-serif;
+    }
+
+    .reading-navbar .brand {
+        color: white;
+        font-size: 20px;
+        font-weight: bold;
+        text-decoration: none;
+    }
+
+    .reading-navbar .nav-links {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 24px;
+    }
+
+    .reading-navbar .nav-links a {
+        color: #e0ebe2;
+        text-decoration: none;
+        font-size: 14px;
+    }
+
+    .reading-navbar .nav-links a:hover {
+        text-decoration: underline;
+    }
+
+    .reading-navbar .nav-user {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .reading-navbar .username {
+        font-size: 13px;
+        color: #d4e5d8;
+    }
+
+    .reading-navbar .logout-form {
+        margin: 0;
+        padding: 0;
+    }
+
+    .reading-navbar .logout-button {
+        width: auto;
+        margin: 0;
+        padding: 9px 15px;
+        background: transparent;
+        border: 1px solid #ffffff;
+        border-radius: 7px;
+        color: white;
+        cursor: pointer;
+        font-size: 13px;
+    }
+
+    .reading-navbar .logout-button:hover {
+        background: #285b41;
+    }
+</style>
+
+<nav class="reading-navbar">
+
+    <a href="{% url 'home' %}" class="brand">
+        Reading Lab
+    </a>
+
+    <div class="nav-links">
+        <a href="{% url 'dashboard' %}">Insights</a>
+        <a href="{% url 'library' %}">My Library</a>
+        <a href="{% url 'upload' %}">Import Books</a>
+    </div>
+
+    <div class="nav-user">
+        <span class="username">
+            {{ request.user.username }}
+        </span>
+
+        <form
+            method="post"
+            action="{% url 'logout' %}"
+            class="logout-form"
+        >
+            {% csrf_token %}
+
+            <button type="submit" class="logout-button">
+                Log out
+            </button>
+        </form>
+    </div>
+
+</nav>

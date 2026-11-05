@@ -1,0 +1,155 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reading Lab — Upload</title>
+
+    <link rel="stylesheet"
+          href="{% static 'analytics/style.css' %}">
+
+    <style>
+        body {
+            margin: 0;
+            background: #f7f5ef;
+            font-family: Arial, sans-serif;
+        }
+
+        .upload-page {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 24px;
+            box-sizing: border-box;
+        }
+
+        .upload-container {
+            width: 100%;
+            max-width: 550px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #173e2b;
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+
+        .subtitle {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 35px;
+        }
+
+        .upload-box {
+            background: white;
+            border: 2px dashed #90aa98;
+            border-radius: 16px;
+            padding: 35px;
+        }
+
+        input[type="file"] {
+            width: 100%;
+            max-width: 350px;
+            margin: 18px 0;
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            background: #173e2b;
+            color: white;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background: #285b41;
+        }
+
+        .error {
+            color: #a52a2a;
+            margin-bottom: 20px;
+        }
+
+        .hint {
+            color: #777;
+            font-size: 13px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+<div class="shell">
+
+  {% include 'analytics/sidebar.html' %}
+
+  <main class="main">
+    <header class="topbar">
+      <span>Reading Lab <b>/</b> Import Books</span>
+    </header>
+
+    <div class="upload-page">
+
+    <main class="upload-container">
+
+        <h1>Reading Lab</h1>
+
+        <p class="subtitle">
+            Discover the reader behind your books.
+            Upload your Goodreads library and explore
+            your unique reading patterns.
+        </p>
+
+        <div class="upload-box">
+            <h2>Upload your library</h2>
+
+            <p>Select your Goodreads CSV export.</p>
+
+            {% if error %}
+                <p class="error">{{ error }}</p>
+            {% endif %}
+
+            <form method="POST"
+                  action="{% url 'upload' %}"
+                  enctype="multipart/form-data">
+
+                {% csrf_token %}
+
+                <input
+                    type="file"
+                    name="csv_file"
+                    accept=".csv,text/csv"
+                    required
+                >
+
+                <button type="submit">
+                    Analyze my books
+                </button>
+            </form>
+        </div>
+
+        <p class="hint">
+            Supported format: Goodreads CSV export.
+            Maximum file size: 2 MB.
+        </p>
+
+    </main>
+</div>
+
+</body>
+</html>
+
+
+<form method="post" action="{% url 'logout' %}">
+    {% csrf_token %}
+    <button type="submit">Log out</button>
+</form>
+
