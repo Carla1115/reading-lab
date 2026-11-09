@@ -9,3 +9,6 @@ db.sqlite3
 media/
 private_data/
 spotify_data/
+logs/
+venv_old/
+*.sqlite3

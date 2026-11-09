@@ -32,6 +32,9 @@ from django.shortcuts import get_object_or_404
 
 from django.shortcuts import get_object_or_404
 
+from django.core.cache import cache
+from django.utils.crypto import salted_hmac
+
 
 
 CSV_FILE = Path(settings.BASE_DIR) / 'private_data' / 'goodreads_library_export.csv'
@@ -153,7 +156,7 @@ def upload_csv(request):
 
             seen_ids.add(book_id)
 
-            
+
             rating_value = float(row.get("My Rating") or 0)
 
             if not rating_value.is_integer():
@@ -336,12 +339,25 @@ def register_view(request):
 
 
 
+
+
+
 def login_view(request):
+    # FLAW 3 - A07:2021 Identification and Authentication Failures
+
+    # VULNERABLE CODE:
+    # The application does not limit failed login attempts.
+    # Attackers can repeatedly try different passwords.
+
     if request.user.is_authenticated:
         if UserBook.objects.filter(user=request.user).exists():
             return redirect("dashboard")
         return redirect("upload")
 
+    # TO ACTIVATE THE FIX:
+    # 1. Comment out the vulnerable POST/else block below.
+    # 2. Uncomment the complete rate-limiting FIX block.
+    # 3. Add "error_message": error_message to the render context.
     if request.method == "POST":
         form = AuthenticationForm(request, data=request.POST)
 
@@ -355,8 +371,57 @@ def login_view(request):
     else:
         form = AuthenticationForm(request)
 
+    # FIX: Limit failed login attempts using Django's cache.
+    #
+    # MAX_ATTEMPTS = 5
+    # BLOCK_SECONDS = 300
+    #
+    # error_message = None
+    #
+    # username = (
+    #     request.POST.get("username", "").strip()
+    #     if request.method == "POST"
+    #     else ""
+    # )
+    #
+    # cache_key = "login_attempts_" + salted_hmac(
+    #     "reading-lab-login",
+    #     username.lower()
+    # ).hexdigest()
+    #
+    # if request.method == "POST":
+    #     attempts = cache.get(cache_key, 0)
+    #
+    #     if attempts >= MAX_ATTEMPTS:
+    #         form = AuthenticationForm(request)
+    #         error_message = (
+    #             "Too many failed login attempts. "
+    #             "Please try again in 5 minutes."
+    #         )
+    #     else:
+    #         form = AuthenticationForm(request, data=request.POST)
+    #
+    #         if form.is_valid():
+    #             cache.delete(cache_key)
+    #             login(request, form.get_user())
+    #
+    #             if UserBook.objects.filter(user=request.user).exists():
+    #                 return redirect("dashboard")
+    #
+    #             return redirect("upload")
+    #
+    #         cache.set(
+    #             cache_key,
+    #             attempts + 1,
+    #             timeout=BLOCK_SECONDS
+    #         )
+    # else:
+    #     form = AuthenticationForm(request)
+
     return render(request, "analytics/login.html", {
-        "form": form
+        "form": form,
+    # FIX: Uncomment this when enabling rate limiting.
+    # "error_message": error_message,
     })
 
 
@@ -378,60 +443,6 @@ def home(request):
     return redirect("upload")
 
 
-
-@login_required
-@require_http_methods(["GET", "POST"])
-def library_view(request):
-    error = None
-
-    if request.method == "POST":
-        user_book = get_object_or_404(
-            UserBook,
-            id=request.POST.get("user_book_id"),
-            user=request.user
-        )
-
-        try:
-            rating = int(request.POST.get("rating", ""))
-
-            if not 0 <= rating <= 5:
-                raise ValueError()
-
-            user_book.rating = rating
-            user_book.save(update_fields=["rating"])
-
-            return redirect("library")
-
-        except (ValueError, TypeError):
-            error = "Please select a valid rating."
-
-    search = request.GET.get("search", "").strip()
-    shelf = request.GET.get("shelf", "").strip()
-
-    books = UserBook.objects.filter(
-        user=request.user
-    ).select_related("book")
-
-    if search:
-        books = books.filter(
-            Q(book__title__icontains=search) |
-            Q(book__author__icontains=search)
-        )
-
-    if shelf in ["read", "to-read", "currently-reading"]:
-        books = books.filter(shelf=shelf)
-
-    books = books.order_by("book__title")
-
-    return render(request, "analytics/library.html", {
-        "books": books,
-        "search": search,
-        "selected_shelf": shelf,
-        "total_books": books.count(),
-        "error": error,
-    })
-
-
 from django.db.models import Q
 
 
@@ -440,11 +451,21 @@ from django.db.models import Q
 def library_view(request):
 
     if request.method == "POST":
+
+        # FLAW 1 - A01:2021 Broken Access Control
+
+        # Vulnerable code: Missing ownership verification.
         user_book = get_object_or_404(
-            UserBook,
-            id=request.POST.get("user_book_id"),
-            user=request.user
+           UserBook,
+           id=request.POST.get("user_book_id")
         )
+
+        # FIX: Verify that the requested book belongs to the logged-in user.
+        # user_book = get_object_or_404(
+        #     UserBook,
+        #     id=request.POST.get("user_book_id"),
+        #     user=request.user
+        #)
 
         try:
             rating = int(request.POST.get("rating", ""))
@@ -460,27 +481,58 @@ def library_view(request):
         except (ValueError, TypeError):
             pass
 
+
+
+    # FLAW 2 - A03:2021 Injection (SQL Injection)
+
     search = request.GET.get("search", "").strip()
     shelf = request.GET.get("shelf", "").strip()
 
-    books = UserBook.objects.filter(
-        user=request.user
-    ).select_related("book")
-
+    # VULNERABLE CODE:
+    # User-controlled input is directly inserted into the SQL query.
     if search:
-        books = books.filter(
-            Q(book__title__icontains=search) |
-            Q(book__author__icontains=search)
-        )
+        query = f"""
+            SELECT ub.*
+            FROM analytics_userbook AS ub
+            JOIN analytics_book AS b ON ub.book_id = b.id
+            WHERE ub.user_id = {request.user.id}
+              AND (b.title || ' ' || b.author) LIKE '%{search}%'
+            ORDER BY b.title
+        """
+        books = UserBook.objects.raw(query)
 
-    if shelf in ["read", "to-read", "currently-reading"]:
-        books = books.filter(shelf=shelf)
+    else:
+        books = UserBook.objects.filter(
+            user=request.user
+        ).select_related("book").order_by("book__title")
 
-    books = books.order_by("book__title")
+    if shelf:
+        books = [
+            user_book for user_book in books
+            if user_book.shelf == shelf
+        ]
 
-    return render(request, "analytics/library.html", {
-        "books": books,
-        "search": search,
-        "selected_shelf": shelf,
-        "total_books": books.count(),
-    })
+    # FIX: Use Django ORM with parameterized queries
+    # to prevent SQL Injection.
+    #
+    # books = UserBook.objects.filter(
+    #     user=request.user
+    # ).select_related("book")
+
+    # if search:
+    #    books = books.filter(
+    #         Q(book__title__icontains=search) |
+    #         Q(book__author__icontains=search)
+    #     )
+    #
+    # if shelf:
+    #     books = books.filter(shelf=shelf)
+    #
+    # books = books.order_by("book__title")
+
+    # return render(request, "analytics/library.html", {
+    #    "books": books,
+    #    "search": search,
+    #    "selected_shelf": shelf,
+    #    "total_books": len(books),
+    # })

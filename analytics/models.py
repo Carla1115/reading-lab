@@ -2,6 +2,7 @@
 from django.conf import settings
 from django.db import models
 
+from .encrypted_fields import EncryptedTextField
 
 class Book(models.Model):
     # Information about a book from Goodreads
@@ -57,9 +58,18 @@ class UserBook(models.Model):
         blank=True
     )
 
-    private_notes = models.TextField(
-        blank=True
-    )
+
+
+    # FLAW 4 - A02:2021 Cryptographic Failures
+
+    # VULNERABLE CODE:
+    # Private notes are stored without application-level encryption.
+    private_notes = models.TextField(blank=True)
+
+    # FIX: Encrypt private notes using Fernet.
+    # private_notes = EncryptedTextField(blank=True)
+
+
 
     class Meta:
         constraints = [

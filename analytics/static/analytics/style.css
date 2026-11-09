@@ -1,5 +1,161 @@
 
-/* User information and logout button */
+/* =========================================
+   READING LAB — GLOBAL DESIGN
+   ========================================= */
+
+:root {
+    --green-dark: #173e35;
+    --green: #285a49;
+    --green-light: #e1eee4;
+    --cream: #f7f8f4;
+    --white: #ffffff;
+    --text: #20382f;
+    --muted: #78847d;
+    --border: #e4e9e3;
+    --accent: #c7d9a4;
+    --shadow: 0 6px 24px rgba(27, 52, 41, 0.04);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: var(--cream);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont,
+                 "Segoe UI", Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+button,
+input,
+select {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+/* =========================================
+   SHARED LAYOUT
+   ========================================= */
+
+.shell {
+    display: flex;
+    min-height: 100vh;
+}
+
+.main {
+    flex: 1;
+    min-width: 0;
+    margin-left: 255px;
+}
+
+/* =========================================
+   SIDEBAR
+   ========================================= */
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 255px;
+    padding: 35px 24px 25px;
+    background: var(--green-dark);
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    z-index: 10;
+}
+
+.sidebar a {
+    color: inherit;
+}
+
+.sidebar-brand,
+.brand,
+.logo {
+    font-size: 25px;
+    font-weight: 750;
+    letter-spacing: -1.2px;
+    line-height: 1.2;
+}
+
+.sidebar-brand span,
+.brand span {
+    color: var(--accent);
+}
+
+.sidebar-label,
+.nav-label,
+.sidebar-section-title {
+    margin: 43px 0 15px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: #a6bdb0;
+}
+
+.sidebar nav,
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.sidebar nav a,
+.sidebar-nav a,
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 15px;
+    border-radius: 9px;
+    color: #d1e0d7;
+    font-size: 13px;
+    font-weight: 500;
+    transition: background 0.2s;
+}
+
+.sidebar nav a:hover,
+.sidebar-nav a:hover,
+.nav-link:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.sidebar nav a.active,
+.sidebar-nav a.active,
+.nav-link.active {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    font-weight: 650;
+}
+
+.sidebar-bottom {
+    margin-top: auto;
+    padding-top: 22px;
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    font-size: 12px;
+    color: #b6cec0;
+}
+
+.sidebar-bottom strong {
+    display: block;
+    color: #ffffff;
+    font-size: 14px;
+    margin-top: 5px;
+}
 
 .sidebar-logout {
     margin-top: 18px;
@@ -8,11 +164,11 @@
 .logout-btn {
     width: 100%;
     padding: 12px;
+    background: transparent;
+    color: white;
     border: 1px solid rgba(255, 255, 255, 0.35);
     border-radius: 8px;
-    background: transparent;
-    color: #ffffff;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 500;
     text-align: left;
     cursor: pointer;
@@ -23,52 +179,713 @@
     background: rgba(255, 255, 255, 0.12);
 }
 
-.sidebar-bottom strong {
-    display: block;
-    color: #ffffff;
-    font-size: 14px;
-    margin-top: 4px;
+/* =========================================
+   TOPBAR
+   ========================================= */
+
+.topbar {
+    min-height: 76px;
+    padding: 20px 55px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.75);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    color: var(--muted);
+    font-size: 12px;
 }
 
-
-
-/* Shared layout */
-
-.sidebar-logout {
-    margin-top: 18px;
+.topbar b {
+    margin: 0 10px;
+    color: #b2beb4;
 }
 
-.logout-btn {
+.file-pill {
+    padding: 7px 14px;
+    background: var(--green-light);
+    color: var(--green);
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+/* =========================================
+   DASHBOARD CONTENT
+   ========================================= */
+
+.content {
     width: 100%;
-    padding: 12px;
-    background: transparent;
-    color: white;
-    border: 1px solid rgba(255,255,255,0.35);
-    border-radius: 8px;
-    cursor: pointer;
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 55px 55px 65px;
 }
 
-.logout-btn:hover {
-    background: rgba(255,255,255,0.12);
-}
-
-.sidebar-bottom strong {
+.eyebrow,
+.kicker {
     display: block;
-    color: white;
-    margin-top: 5px;
+    font-size: 10px;
+    font-weight: 750;
+    letter-spacing: 1.7px;
+    color: #648777;
 }
 
-/* Library layout */
+.eyebrow {
+    margin-bottom: 16px;
+}
+
+h1,
+h2,
+h3,
+p {
+    margin-top: 0;
+}
+
+.content h1 {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(34px, 4vw, 56px);
+    line-height: 1.12;
+    letter-spacing: -1.5px;
+    color: var(--green-dark);
+    font-weight: 500;
+    margin-bottom: 20px;
+}
+
+.content h1 em {
+    color: #78977c;
+    font-weight: 400;
+}
+
+.intro {
+    max-width: 550px;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.9;
+    margin-bottom: 38px;
+}
+
+/* =========================================
+   METRIC CARDS
+   ========================================= */
+
+.metric-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 17px;
+    margin: 35px 0 52px;
+}
+
+.metric {
+    display: flex;
+    flex-direction: column;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 13px;
+    padding: 24px;
+    min-height: 152px;
+    box-shadow: var(--shadow);
+}
+
+.metric span {
+    font-size: 10px;
+    letter-spacing: 1.1px;
+    font-weight: 750;
+    color: #72887a;
+}
+
+.metric strong {
+    font-family: Georgia, serif;
+    font-size: 42px;
+    font-weight: 500;
+    line-height: 1.3;
+    color: var(--green-dark);
+    margin-top: 12px;
+}
+
+.metric small {
+    color: var(--muted);
+    font-size: 11px;
+}
+
+/* =========================================
+   SECTIONS
+   ========================================= */
+
+.section-label {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    align-items: center;
+    margin: 46px 0 18px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+}
+
+.section-label span:first-child {
+    font-size: 10px;
+    font-weight: 750;
+    letter-spacing: 1.5px;
+    color: var(--green);
+}
+
+.section-label span:last-child {
+    color: var(--muted);
+    font-size: 11px;
+}
+
+.two-cols {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.panel {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 28px;
+    box-shadow: var(--shadow);
+    min-width: 0;
+}
+
+.panel-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 15px;
+}
+
+.panel h2 {
+    margin: 8px 0 0;
+    color: var(--green-dark);
+    font-family: Georgia, serif;
+    font-weight: 500;
+    font-size: 24px;
+    line-height: 1.25;
+}
+
+.panel-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 35px;
+    height: 35px;
+    flex-shrink: 0;
+    border-radius: 9px;
+    background: var(--green-light);
+    color: var(--green);
+    font-size: 18px;
+}
+
+.panel-sub {
+    color: var(--muted);
+    font-size: 12px;
+    margin: 12px 0 28px;
+}
+
+.insight,
+.footnote {
+    font-size: 11px;
+    line-height: 1.7;
+    color: var(--muted);
+    margin: 24px 0 0;
+}
+
+/* =========================================
+   PAGE COUNT COMPARISON
+   ========================================= */
+
+.comparison {
+    margin-top: 25px;
+}
+
+.compare-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin: 20px 0 9px;
+    font-size: 12px;
+}
+
+.compare-row span {
+    color: var(--muted);
+}
+
+.compare-row b {
+    color: var(--green-dark);
+}
+
+.track {
+    height: 9px;
+    border-radius: 20px;
+    background: #edf1eb;
+    overflow: hidden;
+    flex: 1;
+}
+
+.fill {
+    height: 100%;
+    border-radius: inherit;
+}
+
+.fill.a {
+    background: #346d58;
+}
+
+.fill.b {
+    background: #bad5a8;
+}
+
+.fill.c {
+    background: #6e9b80;
+}
+
+/* =========================================
+   PUBLICATION YEAR COMPARISON
+   ========================================= */
+
+.year-pair {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    gap: 15px;
+    margin: 38px 0;
+}
+
+.year-pair > div:not(.vs) {
+    text-align: center;
+}
+
+.year-pair small {
+    display: block;
+    font-size: 10px;
+    letter-spacing: 1px;
+    font-weight: 750;
+    color: #839489;
+}
+
+.year-pair strong {
+    display: block;
+    margin-top: 10px;
+    font-family: Georgia, serif;
+    font-size: 39px;
+    font-weight: 500;
+    color: var(--green-dark);
+}
+
+.year-pair .vs {
+    color: #b5c0b6;
+    font-family: Georgia, serif;
+    font-size: 20px;
+    font-style: italic;
+}
+
+/* =========================================
+   RATING CHART
+   ========================================= */
+
+.rating-chart {
+    margin-top: 30px;
+}
+
+.rating-line {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 17px;
+}
+
+.rating-line > span {
+    width: 35px;
+    flex-shrink: 0;
+    color: var(--green-dark);
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.rating-line > b {
+    width: 22px;
+    text-align: right;
+    font-size: 12px;
+    color: var(--green);
+}
+
+/* =========================================
+   FEATURE PANEL
+   ========================================= */
+
+.feature-panel {
+    background: #e9f0e4;
+    border-color: #dce8d8;
+}
+
+.feature-panel h2 {
+    margin: 18px 0;
+    font-size: 32px;
+}
+
+.feature-panel p {
+    max-width: 360px;
+    font-size: 13px;
+    line-height: 1.9;
+    color: #52685a;
+}
+
+.feature-accent {
+    display: block;
+    border-left: 3px solid #7ca386;
+    margin-top: 30px;
+    padding: 12px 16px;
+    color: #557365;
+    font-size: 12px;
+    background: rgba(255,255,255,0.4);
+}
+
+/* =========================================
+   RECOMMENDATIONS
+   ========================================= */
+
+.recommendation-panel {
+    padding: 30px;
+}
+
+.recommendations {
+    margin-top: 20px;
+}
+
+.book-row {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 19px 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.book-row:last-child {
+    border-bottom: 0;
+}
+
+.rank {
+    font-family: Georgia, serif;
+    font-size: 23px;
+    color: #86a18b;
+    min-width: 34px;
+}
+
+.book-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.book-info strong {
+    display: block;
+    font-size: 13px;
+    color: var(--green-dark);
+}
+
+.book-info small {
+    display: block;
+    margin-top: 5px;
+    font-size: 11px;
+    color: var(--muted);
+}
+
+.score {
+    font-family: Georgia, serif;
+    font-size: 26px;
+    color: var(--green);
+    white-space: nowrap;
+}
+
+.score small {
+    font-family: Arial, sans-serif;
+    font-size: 11px;
+    color: var(--muted);
+}
+
+.notice {
+    padding: 16px 20px;
+    margin: 25px 0;
+    background: var(--green-light);
+    border: 1px solid #cce0d0;
+    border-radius: 9px;
+    color: var(--green-dark);
+}
+
+.notice a {
+    text-decoration: underline;
+    font-weight: 650;
+}
+
+/* =========================================
+   LIBRARY PAGE
+   ========================================= */
 
 .main .container {
-    max-width: 1100px;
+    max-width: 1200px;
     margin: 35px auto;
-    padding: 0 32px;
+    padding: 0 40px;
 }
 
-/* Upload layout */
+.container h1 {
+    color: var(--green-dark);
+    font-family: Georgia, serif;
+    font-size: 36px;
+    font-weight: 500;
+    margin-bottom: 12px;
+}
+
+.container > p {
+    color: var(--muted);
+}
+
+.search-form,
+.filters,
+.filter-form {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 25px 0;
+}
+
+.search-form input,
+.search-form select,
+.filters input,
+.filters select,
+.filter-form input,
+.filter-form select,
+.container input,
+.container select {
+    padding: 11px 13px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: white;
+    color: var(--text);
+}
+
+.search-form input,
+.filter-form input {
+    min-width: 240px;
+}
+
+.search-form button,
+.filters button,
+.filter-form button,
+.container button,
+.upload-page button {
+    padding: 11px 18px;
+    background: var(--green);
+    color: white;
+    border: 0;
+    border-radius: 8px;
+    font-weight: 600;
+}
+
+.search-form button:hover,
+.filters button:hover,
+.filter-form button:hover,
+.container button:hover,
+.upload-page button:hover {
+    background: var(--green-dark);
+}
+
+.container table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 25px;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+}
+
+.container th {
+    text-align: left;
+    padding: 17px 16px;
+    background: #eaf1e9;
+    color: var(--green-dark);
+    font-size: 11px;
+    font-weight: 750;
+    letter-spacing: 0.4px;
+}
+
+.container td {
+    padding: 17px 16px;
+    border-top: 1px solid var(--border);
+    vertical-align: middle;
+    font-size: 12px;
+}
+
+.container tbody tr:hover {
+    background: #f9fbf8;
+}
+
+.rating-form {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.rating-form select {
+    min-width: 85px;
+}
+
+.rating-form button {
+    padding: 9px 13px;
+}
+
+/* =========================================
+   UPLOAD PAGE
+   ========================================= */
 
 .main .upload-page {
     min-height: calc(100vh - 90px);
+    padding: 35px 45px;
+}
+
+.upload-page h1 {
+    font-family: Georgia, serif;
+    font-weight: 500;
+    font-size: 38px;
+    color: var(--green-dark);
+}
+
+.upload-page p {
+    color: var(--muted);
+    max-width: 650px;
+}
+
+.upload-page form {
+    max-width: 650px;
     padding: 30px;
+    margin-top: 30px;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: white;
+    box-shadow: var(--shadow);
+}
+
+.upload-page input[type="file"] {
+    display: block;
+    width: 100%;
+    margin: 20px 0;
+    padding: 15px;
+    border: 1px dashed #afc8b6;
+    border-radius: 9px;
+    background: #f8fbf7;
+}
+
+.upload-page button {
+    padding: 12px 22px;
+}
+
+/* =========================================
+   FOOTER
+   ========================================= */
+
+footer {
+    margin-top: 55px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    color: #9ba89c;
+    font-size: 10px;
+    letter-spacing: 1px;
+}
+
+/* =========================================
+   RESPONSIVE
+   ========================================= */
+
+@media (max-width: 1100px) {
+    .metric-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .content {
+        padding: 40px 30px;
+    }
+
+    .topbar {
+        padding: 20px 30px;
+    }
+}
+
+@media (max-width: 800px) {
+    .shell {
+        display: block;
+    }
+
+    .sidebar {
+        position: relative;
+        width: 100%;
+        min-height: auto;
+        padding: 20px;
+    }
+
+    .sidebar-label,
+    .nav-label {
+        margin-top: 20px;
+    }
+
+    .sidebar-bottom {
+        margin-top: 25px;
+    }
+
+    .main {
+        margin-left: 0;
+    }
+
+    .two-cols {
+        grid-template-columns: 1fr;
+    }
+
+    .content {
+        padding: 30px 20px;
+    }
+
+    .main .container {
+        padding: 0 20px;
+    }
+
+    .main .upload-page {
+        padding: 25px 20px;
+    }
+}
+
+@media (max-width: 500px) {
+    .metric-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .topbar {
+        padding: 15px 20px;
+        flex-wrap: wrap;
+    }
+
+    .content h1 {
+        font-size: 37px;
+    }
+
+    .panel {
+        padding: 20px;
+    }
+
+    .section-label {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .year-pair strong {
+        font-size: 30px;
+    }
+
+    .book-row {
+        gap: 10px;
+    }
+
+    .container {
+        overflow-x: auto;
+    }
 }
