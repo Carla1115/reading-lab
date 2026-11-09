@@ -19,11 +19,9 @@ Users can create accounts, import their reading history from a CSV file, explore
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/reading-lab.git
+git clone https://github.com/Carla1115/reading-lab.git
 cd reading-lab
 ```
-
-Replace `YOUR_USERNAME` with the repository owner's GitHub username.
 
 ### 2. Create and activate a virtual environment
 
