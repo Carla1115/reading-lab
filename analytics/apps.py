@@ -16,6 +16,6 @@ class AnalyticsConfig(AppConfig):
         # dedicated security monitoring mechanism.
 
         # FIX: Register the security event handlers.
-        from . import security_signals
+        #from . import security_signals
 
-        #pass
+        pass
